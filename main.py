@@ -2,10 +2,12 @@
 
 from core.decision_engine import DecisionEngine
 from core.environment import TradingEnvironment
+from utils.logger import TradingLogger
 
-# Inisialisasi modul utama
+# Inisialisasi modul utama dan logger
 engine = DecisionEngine()
 env = TradingEnvironment()
+logger = TradingLogger()
 
 # Contoh data dummy untuk 1 episode
 state = {
@@ -22,10 +24,10 @@ state = {
 env.reset(state)
 
 # Ambil keputusan AI
-action = engine.make_decision(state)
+action = engine.make_decision(state, result={})
 print(f"Aksi AI: {action}")
 
-# Simulasikan next price
+# Simulasikan next price (contoh)
 next_price = 1.1800
 
 # Evaluasi hasil aksi
@@ -39,5 +41,14 @@ engine.confidence.update(
 
 # Simpan memori
 engine.memory.store(state, action, result)
+
+# Log setiap aksi dan refleksi narasi
+logger.log(
+    state=state,
+    action=action,
+    confidence=engine.confidence.get_confidence(),
+    reward=result["reward"],
+    narration=engine.narrator.get_last_narration()
+)
 
 print(f"Reward: {result['reward']}")
